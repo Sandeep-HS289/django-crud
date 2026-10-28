@@ -1,0 +1,8 @@
+langchain
+django==5.2.6
+langchain-community
+langchain-groq
+python-dotenv
+argon2-cffi
+gunicorn
+whitenoise

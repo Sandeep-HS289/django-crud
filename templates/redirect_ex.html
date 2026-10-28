@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>redirct</title>
+</head>
+
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="name" placeholder="Enter Sandeep">
+        <button type="submit">Submit</button>
+    </form>
+</body>
+
+</html>

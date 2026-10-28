@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Leovon Hub</title>
+    <link rel="stylesheet" href="{% static 'css/about.css' %}?v=2.0">
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <header class="site-header">
+        <div class="nav-container">
+            <a href="{% url 'home' %}" class="logo-area">
+                <div class="logo-icon">⚡</div>
+                <div class="logo-text">Leovon Hub</div>
+                <span class="logo-badge">Django 5.2</span>
+            </a>
+
+            <nav class="site-nav">
+                <ul>
+                    <li><a href="{% url 'home' %}"><span>🏠</span> Home</a></li>
+                    <li><a href="{% url 'about' %}" class="active"><span>📖</span> About</a></li>
+                    <li><a href="{% url 'contact' %}"><span>📬</span> Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="dev-pill">
+                <div class="dev-avatar">JS</div>
+                <span>Developer: <strong class="dev-name">J. Sandeep Sen</strong></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="about-wrapper">
+
+        <!-- Hero Section -->
+        <section class="about-hero">
+            <span class="hero-pill">⚡ Architecture &amp; Developer Overview</span>
+            <h1>Crafting Scalable Backends with <span class="gradient-text">Django &amp; REST</span></h1>
+            <p>Leovon Hub is an educational exploration into full-stack Django architecture, showcasing MVT patterns, RESTful API endpoints, asynchronous JavaScript integration, and dynamic routing.</p>
+        </section>
+
+        <!-- Developer Profile Card -->
+        <section class="profile-card">
+            <div class="profile-avatar-large">JS</div>
+            <div class="profile-details">
+                <div class="profile-name">
+                    J. Sandeep Sen
+                    <span class="badge badge-api">Developer</span>
+                </div>
+                <div class="profile-role">Full-Stack Django &amp; Python Engineer</div>
+                <p class="profile-bio">Passionate about building robust web applications, exploring backend architecture, database optimizations, and modern responsive user interfaces.</p>
+                <div class="profile-tags">
+                    <span class="badge badge-get">Python 3</span>
+                    <span class="badge badge-post">Django 5.2</span>
+                    <span class="badge badge-put">REST APIs</span>
+                    <span class="badge badge-patch">Vanilla CSS</span>
+                    <span class="badge badge-delete">SQLite ORM</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <h2>Key Capabilities &amp; Architecture</h2>
+            <div class="features-grid">
+
+                <div class="feature-card">
+                    <div class="feature-icon icon-blue">🔄</div>
+                    <h3>Full HTTP Method Suite</h3>
+                    <p>Demonstrates complete REST verbs: GET for queries, POST for creations, PUT for full updates, PATCH for partial edits, and DELETE for removals.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon icon-purple">🛡️</div>
+                    <h3>Django CSRF Security</h3>
+                    <p>Seamlessly integrates Django's CSRF protection across both native HTML form submits and asynchronous JavaScript <code>fetch()</code> requests via headers.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon icon-green">⚡</div>
+                    <h3>Dynamic Route Introspection</h3>
+                    <p>Discovers and exposes registered project endpoints at runtime using Django's URL resolver, intelligently filtering out internal admin endpoints.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon icon-amber">📦</div>
+                    <h3>ORM State Persistence</h3>
+                    <p>Backed by Django's native ORM and SQLite database engine, ensuring real-time schema validation and atomic database transactions.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Django MVT Architecture Flow -->
+        <section class="arch-card">
+            <div class="arch-header">
+                <div>
+                    <h3>Django MVT Request Lifecycle</h3>
+                    <p style="color: var(--text-muted); font-size: 0.88rem;">How requests traverse through the Leovon system</p>
+                </div>
+                <a href="{% url 'home' %}" class="btn btn-primary" style="font-size: 0.85rem; padding: 8px 16px;">
+                    Back to Dashboard &rarr;
+                </a>
+            </div>
+
+            <div class="arch-flow">
+                <div class="flow-step">
+                    <span class="step-num">Step 01</span>
+                    <h4>Client Request</h4>
+                    <p>Browser sends HTTP request via standard HTML form or JavaScript <code>fetch()</code>.</p>
+                </div>
+
+                <div class="flow-step">
+                    <span class="step-num">Step 02</span>
+                    <h4>URL Routing</h4>
+                    <p>Django URLconf matches path to target view function in <code>Leo/appurls.py</code>.</p>
+                </div>
+
+                <div class="flow-step">
+                    <span class="step-num">Step 03</span>
+                    <h4>View &amp; ORM</h4>
+                    <p>Views execute business logic, query or update <code>Students</code> model in database.</p>
+                </div>
+
+                <div class="flow-step">
+                    <span class="step-num">Step 04</span>
+                    <h4>Render / JSON</h4>
+                    <p>Returns rendered HTML template, redirect, or raw JSON response to caller.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <span class="footer-brand">⚡ Leovon Project</span>
+                <span class="footer-desc">Crafted with Django 5.2, Python, and Vanilla Modern CSS</span>
+            </div>
+            <div class="footer-tech">
+                <span class="tech-tag">Django 5.2</span>
+                <span class="tech-tag">SQLite</span>
+                <span class="tech-tag">REST API</span>
+                <span class="tech-tag">Vanilla CSS</span>
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 J. Sandeep Sen. All rights reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

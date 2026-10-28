@@ -1,0 +1,504 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leovon Hub | Student Management & Route Explorer</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}?v=2.0">
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <header class="site-header">
+        <div class="nav-container">
+            <a href="{% url 'home' %}" class="logo-area">
+                <div class="logo-icon">⚡</div>
+                <div class="logo-text">Leovon Hub</div>
+                <span class="logo-badge">Django 5.2</span>
+            </a>
+
+            <nav class="site-nav">
+                <ul>
+                    <li><a href="{% url 'home' %}" class="active"><span>🏠</span> Home</a></li>
+                    <li><a href="{% url 'about' %}"><span>📖</span> About</a></li>
+                    <li><a href="{% url 'contact' %}"><span>📬</span> Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="dev-pill">
+                <div class="dev-avatar">JS</div>
+                <span>Developer: <strong class="dev-name">J. Sandeep Sen</strong></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="page-wrapper">
+
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>Student Management <span class="gradient-text">&amp; API Hub</span></h1>
+                <p>Interactive CRUD operations dashboard with full REST support (POST, PUT, PATCH, DELETE) and automatic route discovery.</p>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <span class="stat-num">{{ obj|length }}</span>
+                    <span class="stat-label">Students</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-num">{{ routes|length }}</span>
+                    <span class="stat-label">Active Routes</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 1: Registered Students -->
+        <section>
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon">👥</div>
+                    <div>
+                        <h2>Registered Students</h2>
+                        <p class="section-subtitle">Real-time database records from SQLite via Django ORM</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="students-container">
+                {% if obj %}
+                <div class="students-table-wrap">
+                    <table class="students-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Student Name</th>
+                                <th>Age</th>
+                                <th>Branch</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in obj %}
+                            <tr>
+                                <td><span class="id-badge">#{{ student.id }}</span></td>
+                                <td><strong>{{ student.name }}</strong></td>
+                                <td>{{ student.age }} yrs</td>
+                                <td><span class="branch-badge">🎓 {{ student.branch }}</span></td>
+                                <td>
+                                    <button type="button" class="quick-action-btn" onclick="fillStudentId('{{ student.id }}', '{{ student.name }}', '{{ student.age }}', '{{ student.branch }}')">
+                                        ⚡ Quick Fill ID
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">📂</div>
+                    <h3>No Student Records Yet</h3>
+                    <p>Use the POST form below to register your first student record into the database.</p>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Section 2: CRUD Operations Grid -->
+        <section>
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon">⚙️</div>
+                    <div>
+                        <h2>CRUD Operations</h2>
+                        <p class="section-subtitle">Test Django's handling of standard POST and asynchronous PUT, PATCH, and DELETE methods</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="crud-grid">
+
+                <!-- 1. POST Form -->
+                <div class="crud-card card-post">
+                    <div class="card-top">
+                        <div class="card-meta">
+                            <h3>Create Record</h3>
+                            <span>HTML Native Form</span>
+                        </div>
+                        <span class="badge badge-post">POST</span>
+                    </div>
+                    <form method="POST" id="postForm" class="crud-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" name="name" placeholder="Enter full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Age</label>
+                            <input type="number" name="age" placeholder="Enter age (e.g. 21)" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Branch</label>
+                            <input type="text" name="branch" placeholder="Enter branch (e.g. CSE)" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">➕ Create Student</button>
+                    </form>
+                </div>
+
+                <!-- 2. PUT Form -->
+                <div class="crud-card card-put">
+                    <div class="card-top">
+                        <div class="card-meta">
+                            <h3>Full Update</h3>
+                            <span>AJAX Fetch Request</span>
+                        </div>
+                        <span class="badge badge-put">PUT</span>
+                    </div>
+                    <form id="studentForm" class="crud-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>Student ID</label>
+                            <input type="text" name="id" id="putIdInput" placeholder="Enter Student ID" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Updated Name</label>
+                            <input type="text" name="name" id="putNameInput" placeholder="Enter new name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Updated Age</label>
+                            <input type="number" name="age" id="putAgeInput" placeholder="Enter new age" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Updated Branch</label>
+                            <input type="text" name="branch" id="putBranchInput" placeholder="Enter new branch" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning">🔄 Update All Fields</button>
+                    </form>
+                </div>
+
+                <!-- 3. PATCH Form -->
+                <div class="crud-card card-patch">
+                    <div class="card-top">
+                        <div class="card-meta">
+                            <h3>Partial Update</h3>
+                            <span>AJAX Fetch Request</span>
+                        </div>
+                        <span class="badge badge-patch">PATCH</span>
+                    </div>
+                    <form id="studentFormPatch" class="crud-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>Student ID</label>
+                            <input type="text" name="id" id="patchIdInput" placeholder="Enter Student ID" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Updated Name</label>
+                            <input type="text" name="name" id="patchNameInput" placeholder="Enter new name only" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">✏️ Update Name</button>
+                    </form>
+                </div>
+
+                <!-- 4. DELETE Form -->
+                <div class="crud-card card-delete">
+                    <div class="card-top">
+                        <div class="card-meta">
+                            <h3>Delete Record</h3>
+                            <span>AJAX Fetch Request</span>
+                        </div>
+                        <span class="badge badge-delete">DELETE</span>
+                    </div>
+                    <form id="studentFormDelete" class="crud-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>Student ID to Delete</label>
+                            <input type="text" name="id" id="deleteIdInput" placeholder="Enter Student ID" required>
+                        </div>
+                        <button type="submit" class="btn btn-danger">🗑️ Delete Student</button>
+                    </form>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Section 3: Routes Explorer (Excluding Admin) -->
+        <section>
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon">🗺️</div>
+                    <div>
+                        <h2>Application Routes Directory</h2>
+                        <p class="section-subtitle">All active Django project endpoints (excluding <code>/admin/</code>)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="routes-container">
+                <div class="routes-toolbar">
+                    <div class="route-filter-tabs">
+                        <button type="button" class="tab-btn active" onclick="filterRoutes('all', this)">All Routes</button>
+                        <button type="button" class="tab-btn" onclick="filterRoutes('page', this)">HTML Pages</button>
+                        <button type="button" class="tab-btn" onclick="filterRoutes('api', this)">API Endpoints</button>
+                    </div>
+                    <div class="routes-count-badge">
+                        Showing <strong id="visibleRoutesCount">{{ routes|length }}</strong> of {{ routes|length }} routes
+                    </div>
+                </div>
+
+                <div class="routes-grid" id="routesGrid">
+                    {% for route in routes %}
+                    <div class="route-card" data-category="{% if route.is_api %}api{% else %}page{% endif %}">
+                        <div class="route-top">
+                            <div class="route-methods">
+                                {% for m in route.methods %}
+                                <span class="badge badge-{{ m|lower }}">{{ m }}</span>
+                                {% endfor %}
+                                {% if route.is_api %}
+                                <span class="badge badge-api">JSON</span>
+                                {% endif %}
+                            </div>
+                            <span class="route-name">name: {{ route.name }}</span>
+                        </div>
+
+                        <div class="route-path-row">
+                            {% if not route.has_params %}
+                            <a href="{{ route.path }}" class="route-path-link" target="_blank" title="Open {{ route.path }} in new tab">
+                                {{ route.path }} ↗
+                            </a>
+                            {% else %}
+                            <span class="route-path-text" title="Dynamic route with parameters">
+                                {{ route.path }}
+                            </span>
+                            {% endif %}
+
+                            <button type="button" class="copy-route-btn" onclick="copyRoute('{{ route.path }}', this)" title="Copy path to clipboard">
+                                📋 Copy
+                            </button>
+                        </div>
+
+                        <div class="route-meta-footer">
+                            <div class="view-indicator">
+                                <span>view:</span> <code>{{ route.view }}</code>
+                            </div>
+                            {% if route.has_params %}
+                            <span style="color: #fbbf24; font-size: 0.74rem;">* parameterized</span>
+                            {% else %}
+                            <a href="{{ route.path }}" style="color: var(--primary-light); text-decoration: none; font-size: 0.78rem;">Visit &rarr;</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <span class="footer-brand">⚡ Leovon Project</span>
+                <span class="footer-desc">Crafted with Django 5.2, Python, and Vanilla Modern CSS</span>
+            </div>
+            <div class="footer-tech">
+                <span class="tech-tag">Django 5.2</span>
+                <span class="tech-tag">SQLite</span>
+                <span class="tech-tag">REST API</span>
+                <span class="tech-tag">Vanilla CSS</span>
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 J. Sandeep Sen. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Handlers -->
+    <script>
+        // Toast Notification Helper
+        function showToast(message, isError = false) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? 'toast-error' : 'toast-success'}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${isError ? '❌' : '✅'}</div>
+                <div>${message}</div>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('toast-hiding');
+                setTimeout(() => toast.remove(), 300);
+            }, 3200);
+        }
+
+        // Quick Fill Helper for ID
+        function fillStudentId(id, name, age, branch) {
+            // Fill into PUT Form
+            const putId = document.getElementById('putIdInput');
+            const putName = document.getElementById('putNameInput');
+            const putAge = document.getElementById('putAgeInput');
+            const putBranch = document.getElementById('putBranchInput');
+            if (putId) putId.value = id;
+            if (putName) putName.value = name;
+            if (putAge) putAge.value = age;
+            if (putBranch) putBranch.value = branch;
+
+            // Fill into PATCH Form
+            const patchId = document.getElementById('patchIdInput');
+            const patchName = document.getElementById('patchNameInput');
+            if (patchId) patchId.value = id;
+            if (patchName) patchName.value = name;
+
+            // Fill into DELETE Form
+            const delId = document.getElementById('deleteIdInput');
+            if (delId) delId.value = id;
+
+            showToast(`Auto-filled Student #${id} (${name}) into update & delete forms!`);
+        }
+
+        // Copy Route Helper
+        function copyRoute(path, btn) {
+            navigator.clipboard.writeText(path).then(() => {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✓ Copied!';
+                btn.style.color = '#34d399';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.color = '';
+                }, 1800);
+            }).catch(() => {
+                showToast(`Route path: ${path}`);
+            });
+        }
+
+        // Route Filter Tabs
+        function filterRoutes(category, tabBtn) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            tabBtn.classList.add('active');
+
+            const cards = document.querySelectorAll('.route-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const cardCat = card.getAttribute('data-category');
+                if (category === 'all' || cardCat === category) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            document.getElementById('visibleRoutesCount').innerText = visibleCount;
+        }
+
+        // Form Submit Listeners
+        const formPut = document.getElementById("studentForm");
+        const formPatch = document.getElementById("studentFormPatch");
+        const formDelete = document.getElementById('studentFormDelete');
+
+        // PUT Handler
+        if (formPut) {
+            formPut.addEventListener("submit", function (e) {
+                e.preventDefault();
+                let data = new FormData(formPut);
+                let id = data.get("id");
+                let name = data.get("name");
+                let age = data.get("age");
+                let branch = data.get("branch");
+                let csrfToken = data.get("csrfmiddlewaretoken");
+
+                fetch("/", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfToken
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        name: name,
+                        age: age,
+                        branch: branch
+                    })
+                })
+                .then(response => response.text())
+                .then(message => {
+                    alert(message);
+                    window.location.reload();
+                })
+                .catch(err => {
+                    alert("Error updating student: " + err);
+                });
+            });
+        }
+
+        // PATCH Handler
+        if (formPatch) {
+            formPatch.addEventListener("submit", function (e) {
+                e.preventDefault();
+                let data = new FormData(formPatch);
+                let name = data.get("name");
+                let id = data.get("id");
+                let csrfToken = data.get("csrfmiddlewaretoken");
+
+                fetch("/", {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfToken
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        name: name,
+                    })
+                })
+                .then(response => response.text())
+                .then(message => {
+                    alert(message);
+                    window.location.reload();
+                })
+                .catch(err => {
+                    alert("Error updating student: " + err);
+                });
+            });
+        }
+
+        // DELETE Handler
+        if (formDelete) {
+            formDelete.addEventListener("submit", (e) => {
+                e.preventDefault();
+                let data = new FormData(formDelete);
+                let id = data.get("id");
+                let csrf = data.get("csrfmiddlewaretoken");
+
+                fetch("/", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrf
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                    })
+                })
+                .then(response => response.text())
+                .then(message => {
+                    alert(message);
+                    window.location.reload();
+                })
+                .catch(err => {
+                    alert("Error deleting student: " + err);
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>

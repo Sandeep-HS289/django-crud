@@ -1,0 +1,208 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | Leovon Hub</title>
+    <link rel="stylesheet" href="{% static 'css/contact.css' %}?v=2.0">
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <header class="site-header">
+        <div class="nav-container">
+            <a href="{% url 'home' %}" class="logo-area">
+                <div class="logo-icon">⚡</div>
+                <div class="logo-text">Leovon Hub</div>
+                <span class="logo-badge">Django 5.2</span>
+            </a>
+
+            <nav class="site-nav">
+                <ul>
+                    <li><a href="{% url 'home' %}"><span>🏠</span> Home</a></li>
+                    <li><a href="{% url 'about' %}"><span>📖</span> About</a></li>
+                    <li><a href="{% url 'contact' %}" class="active"><span>📬</span> Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="dev-pill">
+                <div class="dev-avatar">JS</div>
+                <span>Developer: <strong class="dev-name">J. Sandeep Sen</strong></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="contact-wrapper">
+
+        <!-- Hero Section -->
+        <section class="contact-hero">
+            <h1>Let's Connect &amp; <span class="gradient-text">Collaborate</span></h1>
+            <p>Have questions about Django architecture, API design, or student data management? Send a message or reach
+                out via the contact channels below.</p>
+        </section>
+
+        <!-- Contact Section Layout -->
+        <section class="contact-layout">
+
+            <!-- Left: Info Cards -->
+            <div class="contact-cards">
+
+                <div class="info-card">
+                    <div class="info-icon email">✉️</div>
+                    <div class="info-text">
+                        <span class="info-label">Direct Email</span>
+                        <span class="info-value"><a
+                                href="mailto:sandeepsen@example.com">sandeepsen@example.com</a></span>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon github">💻</div>
+                    <div class="info-text">
+                        <span class="info-label">GitHub Repository</span>
+                        <span class="info-value"><a href="https://github.com"
+                                target="_blank">github.com/sandeepsen</a></span>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon location">📍</div>
+                    <div class="info-text">
+                        <span class="info-label">Location</span>
+                        <span class="info-value">Bapatla, India</span>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon status">⚡</div>
+                    <div class="info-text">
+                        <span class="info-label">Response Time</span>
+                        <span class="info-value">Typically within 24 hours</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right: Interactive Form -->
+            <div class="form-card">
+                <h2>Send a Message</h2>
+                <form id="contactForm" class="contact-form" onsubmit="handleContactSubmit(event)">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Your Name</label>
+                            <input type="text" id="contactName" placeholder="e.g. Alex Taylor" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Your Email</label>
+                            <input type="email" id="contactEmail" placeholder="e.g. alex@example.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" id="contactSubject" placeholder="e.g. Django REST API inquiry" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Message Content</label>
+                        <textarea id="contactMessage" rows="4" placeholder="Write your thoughts or questions here..."
+                            required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="contactSubmitBtn">
+                        🚀 Send Message
+                    </button>
+                </form>
+            </div>
+
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="faqs-section">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-card">
+                    <h4>How does student CRUD operate?</h4>
+                    <p>POST is processed natively with standard Django form submissions. PUT, PATCH, and DELETE utilize
+                        browser <code>fetch()</code> requests sending JSON bodies with CSRF verification.</p>
+                </div>
+
+                <div class="faq-card">
+                    <h4>Where are the endpoints listed?</h4>
+                    <p>All active project endpoints (excluding <code>/admin/</code>) are dynamically discovered and
+                        displayed on the Home Dashboard under the Routes Directory.</p>
+                </div>
+
+                <div class="faq-card">
+                    <h4>How is database data stored?</h4>
+                    <p>Data is persisted in an SQLite database file (<code>db.sqlite3</code>) managed through Django's
+                        model ORM migrations.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <span class="footer-brand">⚡ Leovon Project</span>
+                <span class="footer-desc">Crafted with Django 5.2, Python, and Vanilla Modern CSS</span>
+            </div>
+            <div class="footer-tech">
+                <span class="tech-tag">Django 5.2</span>
+                <span class="tech-tag">SQLite</span>
+                <span class="tech-tag">REST API</span>
+                <span class="tech-tag">Vanilla CSS</span>
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 J. Sandeep Sen. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Script -->
+    <script>
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-success';
+            toast.innerHTML = `
+                <div class="toast-icon">✅</div>
+                <div>${message}</div>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('toast-hiding');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('contactSubmitBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ Sending...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const name = document.getElementById('contactName').value;
+                showToast(`Thank you, ${name}! Your message has been received.`);
+                document.getElementById('contactForm').reset();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }, 800);
+        }
+    </script>
+</body>
+
+</html>
